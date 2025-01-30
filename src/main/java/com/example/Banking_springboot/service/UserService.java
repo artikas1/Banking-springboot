@@ -15,12 +15,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(String email, String password) {
+    public User createUser(String firstName, String lastName, String email, String password) {
         if (userRepository.findByEmail(email) != null) {
             throw new IllegalArgumentException("User with this email already exists");
         }
 
         User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         user.setEmail(email);
         user.setPassword(password);
         return userRepository.save(user);

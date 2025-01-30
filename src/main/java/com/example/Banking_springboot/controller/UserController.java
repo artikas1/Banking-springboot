@@ -18,8 +18,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam String email, @RequestParam String password) {
-        userService.createUser(email, password);
+    public String registerUser(
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String email,
+            @RequestParam String password) {
+        userService.createUser(firstName, lastName, email, password);
         return "User registered successfully";
     }
 
@@ -29,7 +33,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, HttpSession session) {
+    public String login(
+            @RequestParam String email,
+            @RequestParam String password,
+            HttpSession session) {
         User user = userService.login(email, password);
         session.setAttribute("userId", user.getId());
         return "Welcome, " + user.getEmail();

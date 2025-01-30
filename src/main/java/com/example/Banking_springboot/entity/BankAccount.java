@@ -14,6 +14,9 @@ public class BankAccount {
 
     private double balance;
 
+    @Column(nullable = false)
+    private String accountNumber;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
@@ -44,6 +47,14 @@ public class BankAccount {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public User getUser() {
