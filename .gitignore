@@ -35,3 +35,6 @@ build/
 ### Spring Boot ###
 src/main/resources/application.properties
 
+# Ignore all .jar files globally
+*.jar
+

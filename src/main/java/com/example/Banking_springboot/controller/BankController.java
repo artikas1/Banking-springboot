@@ -16,26 +16,6 @@ public class BankController {
         this.bankAccountService = bankAccountService;
     }
 
-    @PostMapping("/transfer")
-    public String transfer(
-            @RequestParam Long sourceAccountId,
-            @RequestParam Long targetAccountId,
-            @RequestParam double amount) {
-        transactionService.transfer(sourceAccountId, targetAccountId, amount);
-        return "Transferred " + amount + " from account " + sourceAccountId + " to account " + targetAccountId;
-    }
-
-    @PostMapping("/withdraw")
-    public String withdraw(@RequestParam Long accountId, @RequestParam double amount) {
-        transactionService.withdraw(accountId, amount);
-        return "Withdrew " +  amount + " from account " + accountId;
-    }
-    @PostMapping("/deposit")
-    public String deposit(@RequestParam Long accountId, @RequestParam double amount) {
-        transactionService.deposit(accountId, amount);
-        return "Deposited " + amount + " into account " + accountId;
-    }
-
     @GetMapping("/balance")
     public String getBalance(@RequestParam Long accountId) {
         double balance = bankAccountService.getAccountById(accountId).getBalance();

@@ -1,5 +1,6 @@
 package com.example.Banking_springboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonIgnore
     private BankAccount account;
 
     @ManyToOne
@@ -25,6 +27,23 @@ public class Transaction {
     private Double amount;
 
     private LocalDateTime timestamp = LocalDateTime.now();
+
+    public Transaction(Double amount, String transactionType, BankAccount account) {
+        this.amount = amount;
+        this.transactionType = transactionType;
+        this.account = account;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Transaction(Double amount, String transactionType, BankAccount account, BankAccount targetAccount) {
+        this.amount = amount;
+        this.transactionType = transactionType;
+        this.account = account;
+        this.targetAccount = targetAccount;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Transaction() {}
 
     public Long getId() {
         return id;

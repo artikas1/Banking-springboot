@@ -19,12 +19,17 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    public void transfer(Long sourceAccountId, Long targetAccountId, double amount) {
+    public void transfer(Long sourceAccountId, Long targetAccountId, double amount, Long loggedInUserId) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Transfer amount must be positive");
         }
 
         BankAccount sourceAccount = bankAccountService.getAccountById(sourceAccountId);
+
+        if (!sourceAccount.getUser().getId().equals(loggedInUserId)) {
+            throw new IllegalArgumentException("You can only transfer from accounts you own!");
+        }
+
         BankAccount targetAccount = bankAccountService.getAccountById(targetAccountId);
 
         if (sourceAccount.getBalance() < amount) {
@@ -36,9 +41,12 @@ public class TransactionService {
 
         bankAccountService.saveAccount(sourceAccount);
         bankAccountService.saveAccount(targetAccount);
+
+        Transaction transaction = new Transaction(amount, "TRANSFER", sourceAccount, targetAccount);
+        transactionRepository.save(transaction);
     }
 
-    public void deposit(Long accountId, double amount) {
+    public void deposit(Long accountId, double amount, Long loggedInUserId) {
 
         if (amount <= 0) {
             throw new IllegalArgumentException("Deposit amount must be positive");
@@ -46,46 +54,46 @@ public class TransactionService {
 
         BankAccount account = bankAccountService.getAccountById(accountId);
 
-        // perform deposit
+        if (!account.getUser().getId().equals(loggedInUserId)) {
+            throw new IllegalArgumentException("You can only deposit from accounts you own!");
+        }
+
         account.setBalance(account.getBalance() + amount);
 
-        // log transaction
-//        Transaction transaction = new Transaction(amount, "DEPOSIT", account);
-//        transactionRepository.save(transaction);
+        Transaction transaction = new Transaction(amount, "DEPOSIT", account);
+        transactionRepository.save(transaction);
 
-        // save account
         bankAccountService.saveAccount(account);
     }
 
-    public void withdraw(Long accountId, double amount) {
+    public void withdraw(Long accountId, double amount, Long loggedInUserId) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Withdrawal amount must be positive");
         }
 
         BankAccount account = bankAccountService.getAccountById(accountId);
 
+        if (!account.getUser().getId().equals(loggedInUserId)) {
+            throw new IllegalArgumentException("You can only withdraw from accounts you own!");
+        }
 
         if (account.getBalance() < amount) {
             throw new IllegalArgumentException("Insufficient funds");
         }
 
-        // perform withdrawal
         account.setBalance(account.getBalance() - amount);
 
         // log transaction
-//        Transaction transaction = new Transaction(amount, "WITHDRAW", account);
-//        transactionRepository.save(transaction);
+        Transaction transaction = new Transaction(amount, "WITHDRAW", account);
+        transactionRepository.save(transaction);
 
-        // save account
         bankAccountService.saveAccount(account);
     }
 
-    // get all transactions
-//    public List<Transaction> getAllTransactions() {
-//        return transactionRepository.findAll();
-//    }
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
 
-    // get transactions for a specific account
     public List<Transaction> getTransactionsByAccount(Long accountId) {
         return transactionRepository.findByAccountId(accountId);
     }

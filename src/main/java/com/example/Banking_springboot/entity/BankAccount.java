@@ -1,5 +1,6 @@
 package com.example.Banking_springboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,9 +16,11 @@ public class BankAccount {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Transaction> transactions;
 
     public BankAccount() {

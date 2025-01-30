@@ -2,6 +2,7 @@ package com.example.Banking_springboot.controller;
 
 import com.example.Banking_springboot.entity.User;
 import com.example.Banking_springboot.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +29,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password) {
+    public String login(@RequestParam String email, @RequestParam String password, HttpSession session) {
         User user = userService.login(email, password);
+        session.setAttribute("userId", user.getId());
         return "Welcome, " + user.getEmail();
     }
 }
